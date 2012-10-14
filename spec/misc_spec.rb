@@ -7,10 +7,6 @@ require 'vgh/logging'
 require 'vgh/configuration'
 
 describe "Various Tests" do
-  it "Should be run by root" do
-    Process.uid.should eq(0)
-  end
-
   it "Should have an array of supported apps" do
     VGH::APPS.list.should be_an Array
   end

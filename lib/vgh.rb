@@ -18,11 +18,11 @@ require 'optparse'
 # See the {file:README.rdoc README} file.
 module VGH
 
-  # Sanity check
-  raise 'Must run as root' unless Process.uid == 0
-
   # The main run method
   def run
+
+    # Check if this script is run with root credentials
+    root_check
 
     # Display header
     show_header
@@ -47,7 +47,13 @@ module VGH
   def show_footer
     message.footer
   end
-end
+
+  # Raise error if this app is not run as root
+  def root_check
+    raise 'Must run as root' unless Process.uid == 0
+  end
+
+end # module VGH
 
 require "vgh/output"
 require "vgh/apps"
