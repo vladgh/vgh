@@ -1,6 +1,6 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
-require 'yard'
+require "yard"
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), 'tasks')
 Dir['tasks/**/*.rake'].each { |task| load task }
