@@ -1,4 +1,4 @@
-= VGH Scripts
+= VGH Scripts {<img src="https://secure.travis-ci.org/vladgh/vgh.png" alt="Build Status" />}[http://travis-ci.org/vladgh/vgh]
 
 A collection of custom scripts used on VladGh.com
 
