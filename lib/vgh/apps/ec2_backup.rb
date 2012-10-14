@@ -3,7 +3,7 @@ module APPS
 
   # == Description:
   #
-  # See {file:README.rdoc#label-EC2-Backup EC2-Backup Section} in the README
+  # See {file:README.rdoc#EC2-Backup EC2-Backup Section} in the README
   # file.
   #
   # == Usage:

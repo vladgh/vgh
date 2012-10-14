@@ -1,6 +1,6 @@
 module VGH
 
-# See {file:README.rdoc#label-Applications Applications Section} in the README
+# See {file:README.rdoc#Applications Applications Section} in the README
 # file.
 #
 #

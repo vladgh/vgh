@@ -35,7 +35,7 @@ module VGH
   # == Description:
   #
   # Returns a structure describing the command line options and arguments.
-  # See {file:README.rdoc#label-Command+line+options Command line options} in
+  # See {file:README.rdoc#Command+line+options Command line options} in
   # the README file.
   #
   #

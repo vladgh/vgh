@@ -65,7 +65,7 @@ The following command line options are available:
 
 [+ApplicationName+] Specify the application you want to run. For a
                     list of available apps see
-                    {file:README.rdoc#label-Applications Applications} below.
+                    {file:README.rdoc#Applications Applications} below.
 [+-c+ <tt>--confdir '~/.vgh'</tt>] Specify the desired directory in which
                                    the configuration files reside.
 [+-v+ <tt>--[no-]verbose</tt>] Specify whether to display messages on the

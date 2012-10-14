@@ -43,7 +43,7 @@ module VGH
 
   # == Description:
   #
-  # See {file:README.rdoc#label-Configuration Configuration Section} in the
+  # See {file:README.rdoc#Configuration Configuration Section} in the
   # README file.
   #
   #
