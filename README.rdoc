@@ -1,0 +1,121 @@
+= VGH Scripts
+
+A collection of custom scripts used on VladGh.com
+
+
+== Instalation
+
+Some system wide dependencies should be installed first:
+
+    apt-get install libxslt-dev libxml2-dev
+
+Add this line to your application's Gemfile:
+
+    gem 'vgh'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install vgh
+
+
+== Configuration
+
+This gem looks for the following configuration files inside "+/etc/vgh+" or the
++--confdir+ specified in {VGH::CLI CLI Class}:
+
+[+config.yml+]
+  The main configuration file for this gem.
+  <em>At this moment nothing needs to be configured here.</em>
+
+[+aws.config.yml+]
+  The AWS specific configuration.
+  Available values:
+  - +:access_key_id+ - [String] Your AWS credentials
+  - +:secret_access_key+ - [String] Your AWS credentials
+  - +:region+ - optional [String] Your current instance's region.
+    Ex: +'us-west-1'+
+
+[+#APP_NAME.config.yml+]
+  The application specific configuration (see below a list of available apps and
+  values).
+
+This gem checks if the files exists and if they are in a correct YAML format.
+
+All files should have the following format (where the keys are symbols):
+    # Comment
+    :key: 'value'
+    :string: 'string value'
+    :integer: 123
+    :boolean: true/false
+    :array:
+     - '1st'
+     - '2nd'
+    :hash:
+     -
+     :sub_key: 'sub value'
+
+
+== Command line options
+
+The following command line options are available:
+
+[+ApplicationName+] Specify the application you want to run. For a
+                    list of available apps see
+                    {file:README.rdoc#label-Applications Applications} below.
+[+-c+ <tt>--confdir '~/.vgh'</tt>] Specify the desired directory in which
+                                   the configuration files reside.
+[+-v+ <tt>--[no-]verbose</tt>] Specify whether to display messages on the
+                               screen or not.
+[+-l+ <tt>--[no-]logging</tt>] Specify whether to log messages or not.
+[+-h+ +--help+] Displays this list.
+[+-V+ +--version+] Displays the version number.
+
+
+== Applications
+
+=== EC2-Backup
+
+[/bin/vgh ec2-backup]
+
+  ==== Description
+  This app creates a snapshot of the attached EBS volumes. It also deletes
+  snapshots older than the expiration period specified in the configuration
+  file. It is intended to be used as a cron job on an AWS instance running
+  Ubuntu.
+  If a MySQL server is running, and the script has access to the administrator
+  credentials, then it closes all open tables and locks all tables for all
+  databases with a global read lock. Everything is unlocked at the end of the
+  script even if errors occur during the snapshot process. <em>You need to
+  provide the necessary mysql credentials in the +ec2-backup.config.yml+ file.
+  </em>
+  If Logical Volumes are found on the system then they are suspended for the
+  duration on the snapshot process.
+  Suspending a volume becomes useful if you want for example a consistent
+  EC2 snapshot of it. Any I/O that has already been mapped by the device but
+  has not yet completed will be flushed. Any further I/O to that device will
+  be postponed for as long as the device is suspended.
+
+
+  ==== EC2-Backup Configuration
+  +ec2-backup.config.yml+
+  - +:expiration+ -- [Integer] Number of days to keep the snapshots.
+      # Ex:
+      :expiration: 7
+
+
+  ==== Intended usage
+    # Cron Job:
+    0 */6 * * * vgh ec2-backup -l
+
+
+== Contributing
+
+1. Fork it
+2. Create your feature branch (<tt>git checkout -b my-new-feature</tt>)
+3. Commit your changes (<tt>git commit -am 'Add some feature'</tt>)
+4. Push to the branch (<tt>git push origin my-new-feature</tt>)
+5. Create new Pull Request (http://help.github.com/articles/using-pull-requests)
