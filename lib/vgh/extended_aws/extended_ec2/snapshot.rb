@@ -11,12 +11,6 @@ module Extended_EC2
 #
 class Snapshot
 
-  # Load all needed classes
-  def initialize
-    @instance_id = MetaData.new.instance_id
-    @fqdn        = System.fqdn
-  end
-
   # The workflow to create a snapshot:
   # - create snapshot
   # - add a name tag
@@ -27,7 +21,7 @@ class Snapshot
     snapshot(volume_id, volume_tag)
     name_tag
     info_tag(volume_id)
-    message.info "Creating and tagging snapshot \"#{@snapshot.id}\""
+    message.info "Creating and tagging snapshot \"#{snapshot.id}\""
   end
 
   # Creates a snapshot for the specified volume
@@ -42,19 +36,19 @@ class Snapshot
   # Creates a name tag for the newly created snapshot.
   # The name is the FQDN of the current instance.
   def name_tag
-    ec2.snapshots[@snapshot.id].tag('Name', :value => @fqdn)
+    ec2.snapshots[snapshot.id].tag('Name', :value => fqdn)
   end
 
   # Creates an info tag for the newly created snapshot
   def info_tag(volume_id)
-    ec2.snapshots[@snapshot.id].tag("Backup_#{@instance_id}", :value => volume_id)
+    ec2.snapshots[snapshot.id].tag("Backup_#{instance_id}", :value => volume_id)
   end
 
   # Purges expired snapshots
   def purge
-    expired.each do |snapshot|
-      message.info "Deleting expired snapshot (#{snapshot.id})"
-      snapshot.delete
+    expired.each do |snap|
+      message.info "Deleting expired snapshot (#{snap.id})"
+      snap.delete
     end
   end
 
@@ -63,9 +57,9 @@ class Snapshot
   # @return [Array] An array of expired snapshot objects
   def expired
     @expired = []
-    all.each {|snapshot|
-      if snapshot.start_time < (Time.now - $cfg[:expiration]*24*60*60)
-        @expired.push snapshot
+    all.each {|snap|
+      if snap.start_time < (Time.now - app_config[:expiration]*24*60*60)
+        @expired.push snap
       end
     }
     return @expired
@@ -75,7 +69,7 @@ class Snapshot
   def all
     @all ||= ec2.snapshots.
       with_owner('self').
-      tagged('Name').tagged_values(@fqdn)
+      tagged('Name').tagged_values(fqdn)
   end
 
 end # class Snapshot

@@ -70,6 +70,7 @@ module VGH
       confdir
       verbose
       logging
+      gemdir
       help
       version
       validate(args)
@@ -134,6 +135,14 @@ module VGH
       end
     end
 
+    # Displays the location of gem files
+    def gemdir
+      @optparse.on_tail('-g', '--gemdir', 'Gem files location') do
+        puts File.expand_path('../../', File.dirname(__FILE__))
+        exit
+      end
+    end
+
     # Loads the help argument
     def help
       @optparse.on_tail('-h', '--help', 'Show this message') do
@@ -176,7 +185,7 @@ module VGH
       exit
     end
 
-  end # Class CLI
+  end # class CLI
 
 end # module VGH
 

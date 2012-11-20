@@ -1,8 +1,19 @@
 require 'open-uri'
-require 'net/http'
-require 'uri'
 
 module VGH
+
+  # Looks for the instance id in the configuration. If it does not exist then it
+  # queries the API server for it.
+  # @return [String]
+  def instance_id
+      remote_instance = app_config[:instance]
+      if remote_instance
+        $instance_id ||= remote_instance
+      else
+        $instance_id ||= VGH::Extended_AWS::Extended_EC2::MetaData.new.instance_id
+      end
+  end
+
 module Extended_AWS
 module Extended_EC2
 

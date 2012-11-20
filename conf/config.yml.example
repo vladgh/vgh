@@ -1,0 +1,9 @@
+# Main settings for VGH gem
+
+# AWS Credentials:
+:access_key_id: 'xxxxxxxxxxxxxxxxxx'
+:secret_access_key: 'xxxxxxxxxxxxxxxxxx'
+
+# AWS Region (optional). It defaults to 'us-east-1'
+#:region: 'us-west-1'
+

@@ -1,4 +1,6 @@
-= VGH Scripts {<img src="https://secure.travis-ci.org/vladgh/vgh.png" alt="Build Status" />}[http://travis-ci.org/vladgh/vgh]
+= VGH Scripts
+{<img src="https://secure.travis-ci.org/vladgh/vgh.png" alt="Build Status" />}[http://travis-ci.org/vladgh/vgh]
+{<img src="https://codeclimate.com/badge.png" />}[https://codeclimate.com/github/vladgh/vgh]
 
 A collection of custom scripts used on VladGh.com
 
@@ -29,10 +31,7 @@ This gem looks for the following configuration files inside "+/etc/vgh+" or the
 
 [+config.yml+]
   The main configuration file for this gem.
-  <em>At this moment nothing needs to be configured here.</em>
-
-[+aws.config.yml+]
-  The AWS specific configuration.
+  This file should include the AWS specific configuration.
   Available values:
   - +:access_key_id+ - [String] Your AWS credentials
   - +:secret_access_key+ - [String] Your AWS credentials
@@ -40,8 +39,9 @@ This gem looks for the following configuration files inside "+/etc/vgh+" or the
     Ex: +'us-west-1'+
 
 [+#APP_NAME.config.yml+]
-  The application specific configuration (see below a list of available apps and
-  values).
+  The application specific configuration (see see
+  {file:README.rdoc#Applications Applications} below for a list of available
+  apps and values).
 
 This gem checks if the files exists and if they are in a correct YAML format.
 
@@ -58,6 +58,10 @@ All files should have the following format (where the keys are symbols):
      -
      :sub_key: 'sub value'
 
+Example configuration files can be found in this gem's directory. You can
+find were that is by specifying the +--gemdir+ command line option.
+
+Ex: <tt>vgh --gemdir</tt>
 
 == Command line options
 
@@ -71,6 +75,7 @@ The following command line options are available:
 [+-v+ <tt>--[no-]verbose</tt>] Specify whether to display messages on the
                                screen or not.
 [+-l+ <tt>--[no-]logging</tt>] Specify whether to log messages or not.
+[+-g+ +--gemdir+] Gem files location.
 [+-h+ +--help+] Displays this list.
 [+-V+ +--version+] Displays the version number.
 
@@ -86,12 +91,18 @@ The following command line options are available:
   snapshots older than the expiration period specified in the configuration
   file. It is intended to be used as a cron job on an AWS instance running
   Ubuntu.
+
+  You can also backup a remote instance, if you specify an +:instance+ or
+  +fqdn+ value in the configuration file. But if you do so, you loose the
+  ability to suspend MySQL or Logical Volumes.
+
   If a MySQL server is running, and the script has access to the administrator
   credentials, then it closes all open tables and locks all tables for all
   databases with a global read lock. Everything is unlocked at the end of the
   script even if errors occur during the snapshot process. <em>You need to
   provide the necessary mysql credentials in the +ec2-backup.config.yml+ file.
   </em>
+
   If Logical Volumes are found on the system then they are suspended for the
   duration on the snapshot process.
   Suspending a volume becomes useful if you want for example a consistent
@@ -102,9 +113,21 @@ The following command line options are available:
 
   ==== EC2-Backup Configuration
   +ec2-backup.config.yml+
-  - +:expiration+ -- [Integer] Number of days to keep the snapshots.
+  - +:expiration+ -- required [Integer] Number of days to keep the snapshots.
       # Ex:
       :expiration: 7
+  - +:mysql_user+ -- required [String] The MySQL user that can flush the tables.
+      # Ex:
+      :mysql_user: 'dbadmin'
+  - +:mysql_pwd+ -- required [String] The password of the above MySQL user.
+      # Ex:
+      :mysql_pwd: 'MyStrongPassword'
+  - +:instance+ -- optional [String] The id of the remote instance you want to backup.
+      # Ex:
+      :instance: 'i-12345678'
+  - +:fqdn+ -- optional [String] The FQDN of the remote instance you want to backup.
+      # Ex:
+      :fqdn: 'MyServer.Example.com'
 
 
   ==== Intended usage
@@ -118,4 +141,13 @@ The following command line options are available:
 2. Create your feature branch (<tt>git checkout -b my-new-feature</tt>)
 3. Commit your changes (<tt>git commit -am 'Add some feature'</tt>)
 4. Push to the branch (<tt>git push origin my-new-feature</tt>)
-5. Create new Pull Request (http://help.github.com/articles/using-pull-requests)
+5. Create new Pull Request
+   ({http://help.github.com/articles/using-pull-requests Using Pull Requests})
+
+
+== License
+{include:file:LICENSE}
+
+
+== Changelog
+{include:file:CHANGELOG.rdoc}

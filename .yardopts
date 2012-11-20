@@ -1,2 +1,6 @@
---no-private --protected --readme=README.rdoc - LICENSE
-
+--no-private
+--protected
+--readme=README.rdoc
+-
+LICENSE
+CHANGELOG.rdoc

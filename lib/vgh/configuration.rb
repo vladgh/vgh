@@ -6,34 +6,33 @@ require 'logger'
 module VGH
 
   # Initialize the configuration parser
+  # @return [Hash]
   def parse_config
-    $config ||= Configuration.new
+    $parse_config ||= Configuration.new
   end
 
   # Returns a hash containing the main settings
-  def main_config
-    $main_config ||= parse_config.main_config
-  end
-
-  # Returns a hash containing the AWS settings
-  def aws_config
-    $aws_config ||= parse_config.aws_config
+  # @return [Hash]
+  def config
+    $config ||= parse_config.main_config
   end
 
   # Returns a hash containing the app settings
+  # @return [Hash]
   def app_config
     $app_config ||= parse_config.app_config
   end
 
   # Returns a single merged hash with all configurations
+  # @return [Hash]
   def global_config
-    $global_config ||= [main_config, aws_config, app_config].inject(:merge)
+    $global_config ||= [config, app_config].inject(:merge)
   end
 
   # Creates a global ec2 method (passing the specified region).
   # The default region is us-east-1, so we overwrite it here.
   def ec2
-    region = aws_config[:region]
+    region = config[:region]
     if region
       $ec2 = AWS::EC2.new.regions[region]
     else
@@ -49,22 +48,17 @@ module VGH
   #
   # == Usage:
   #
-  #     cfg         = Configuration.new
-  #     main_config = cfg.main_config
-  #     aws_config  = cfg.aws_config
-  #     app_config  = cfg.app_config
+  #     parse       = Configuration.new
+  #     main_config = parse.main_config
+  #     app_config  = parse.app_config
   #
   #     pp main_config
-  #     pp aws_config
   #     pp app_config
   #
   class Configuration
 
     # Main configuration
     attr_reader :main_config
-
-    # AWS configuration
-    attr_reader :aws_config
 
     # App specific configuration
     attr_reader :app_config
@@ -73,12 +67,12 @@ module VGH
     def initialize
       @confdir = validate_config_dir('/etc/vgh')
       @main    = "#{@confdir}/config.yml"
-      @aws     = "#{@confdir}/aws.config.yml"
       @app     = "#{@confdir}/#{app}.config.yml"
     end
 
     # IF specified, use the confdir specified in the command line options
-    def validate_config_dir(default_confdir, cli = cli_confdir)
+    def validate_config_dir(default_confdir)
+      cli = cli_confdir
       if cli.nil?
         return default_confdir
       else
@@ -94,11 +88,6 @@ module VGH
       end
     end
 
-    # Returns a parsed configuration
-    def parse(path)
-      @parse = YAML.load(File.read(path))
-    end
-
     # Checks if the configuration file exists
     def config_exists?(path)
       File.exist?(path)
@@ -109,30 +98,24 @@ module VGH
       parse(path).kind_of?(Hash)
     end
 
+    # Returns a parsed configuration
+    def parse(path)
+      @parse = YAML.load(File.read(path))
+    end
+
     # Parse the main configuration
     def main_config
       message.info "Loading main configuration..."
       validate(@main)
-      parse(@main)
-    end
-
-    # Parse the AWS configuration
-    def aws_config
-      message.info "Loading AWS configuration..."
-      validate(@aws)
-      @aws_config = parse(@aws)
-      load_aws
-      return @aws_config
-    end
-
-    # Overwrite the AWS Core configuration
-    def load_aws
-      AWS.config(@aws_config)
+      @main_config = parse(@main)
       AWS.config({
-        :logger        => log,
-        :log_formatter => AWS::Core::LogFormatter.colored,
-        :max_retries   => 2
+        :access_key_id     => @main_config[:access_key_id],
+        :secret_access_key => @main_config[:secret_access_key],
+        :logger            => log,
+        :log_formatter     => AWS::Core::LogFormatter.colored,
+        :max_retries       => 2
       })
+      return @main_config
     end
 
     # Parse app specific configuration
@@ -157,13 +140,14 @@ To run this script, you need to create a file named
 :integer: 123
 :boolean: true/false
 :array:
- - '1st'
- - '2nd'
+- '1st'
+- '2nd'
 :hash:
- -
- :sub_key: 'sub value'
+-
+:sub_key: 'sub value'
 
 END
+      return load_error
     end
 
   end # class Configuration

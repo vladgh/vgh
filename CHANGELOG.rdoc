@@ -1,0 +1,22 @@
+=== 0.1.0
+[Features]
+  - Add remote backup option
+  - Remove extra AWS configuration file
+  - Provide MySQL credentials in the configuration file
+  - Check if run as root at application level
+  - If log file can not be created, return STDOUT
+  - Add `gemdir` command line option to return gem files path
+  - Add configuration examples
+  - Add CHANGELOG
+[Bugs]
+  - Clean up code
+  - More tests
+  - Improve documentation
+  - Fix Rakefile
+
+=== 0.0.2
+[Bugs]
+  - Minor code fixes
+
+=== 0.0.1
+Initial release
