@@ -146,7 +146,7 @@ The following command line options are available:
 
 
 == License
-See {file:LICENSE Applications}
+See {file:LICENSE LICENSE}
 
 
 == Changelog
