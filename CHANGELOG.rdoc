@@ -1,3 +1,8 @@
+=== 0.1.1
+[Bugs]
+  - Fix snapshot creation process
+  - Improve documentation
+
 === 0.1.0
 [Features]
   - Add remote backup option
@@ -14,9 +19,11 @@
   - Improve documentation
   - Fix Rakefile
 
+
 === 0.0.2
 [Bugs]
   - Minor code fixes
+
 
 === 0.0.1
 Initial release

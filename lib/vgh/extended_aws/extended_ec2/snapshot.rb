@@ -11,6 +11,9 @@ module Extended_EC2
 #
 class Snapshot
 
+  # @return [Object] The Snapshot object
+  attr_reader :snapshot
+
   # The workflow to create a snapshot:
   # - create snapshot
   # - add a name tag
@@ -18,7 +21,7 @@ class Snapshot
   # @param [String] volume_id The ID of the volume to snapshot
   # @param [String] volume_tag The Tag of the volume to snapshot
   def create(volume_id, volume_tag)
-    snapshot(volume_id, volume_tag)
+    create_snapshot(volume_id, volume_tag)
     name_tag
     info_tag(volume_id)
     message.info "Creating and tagging snapshot \"#{snapshot.id}\""
@@ -27,9 +30,9 @@ class Snapshot
   # Creates a snapshot for the specified volume
   # @param [String] volume_id The ID of the volume to snapshot
   # @param [String] volume_tag The tag of the volume to snapshot
-  # @return [String, nil] The newly created snapshot object
-  def snapshot(volume_id, volume_tag)
-    @snapshot = ec2.volumes[volume_id].
+  # @return [Object] The newly created snapshot object
+  def create_snapshot(volume_id, volume_tag)
+    @snapshot ||= ec2.volumes[volume_id].
       create_snapshot("Backup for #{volume_id}(#{volume_tag})")
   end
 

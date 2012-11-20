@@ -8,8 +8,13 @@ A collection of custom scripts used on VladGh.com
 == Instalation
 
 Some system wide dependencies should be installed first:
+  * ruby 1.8 or 1.9
+  * rubygems (if ruby 1.8)
+  * ruby-dev
+  * build-essential
+  * libxslt & libxslt-dev
+  * libxml2 & libxml2-dev
 
-    apt-get install libxslt-dev libxml2-dev
 
 Add this line to your application's Gemfile:
 
