@@ -39,7 +39,7 @@ This gem looks for the following configuration files inside "+/etc/vgh+" or the
     Ex: +'us-west-1'+
 
 [+#APP_NAME.config.yml+]
-  The application specific configuration (see see
+  The application specific configuration (see
   {file:README.rdoc#Applications Applications} below for a list of available
   apps and values).
 
@@ -146,8 +146,8 @@ The following command line options are available:
 
 
 == License
-{include:file:LICENSE}
+See {file:LICENSE Applications}
 
 
 == Changelog
-{include:file:CHANGELOG.rdoc}
+See {file:CHANGELOG.rdoc CHANGELOG}
