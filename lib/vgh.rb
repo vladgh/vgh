@@ -21,9 +21,6 @@ module VGH
   # The main run method
   def run
 
-    # Check if this script is run with root credentials
-    root_check
-
     # Display header
     show_header
 
@@ -48,13 +45,9 @@ module VGH
     message.footer
   end
 
-  # Raise error if this app is not run as root
-  def root_check
-    raise 'Must run as root' unless Process.uid == 0
-  end
-
 end # module VGH
 
 require "vgh/output"
+require "vgh/system"
 require "vgh/apps"
 require "vgh/apps/ec2_backup"

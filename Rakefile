@@ -1,14 +1,15 @@
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
-require "yard"
+require 'bundler/gem_helper'
+require 'rspec/core/rake_task'
+require 'yard'
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), 'tasks')
 Dir['tasks/**/*.rake'].each { |task| load task }
 
 RSpec::Core::RakeTask.new
+Bundler::GemHelper.install_tasks
 
 task :default do
-  `rake -T`
+  puts `rake -T`
 end
 
 task :test => :spec

@@ -16,10 +16,11 @@ class MySQL
 
   # Load defaults
   def initialize
+    cfg         = app_config
     @mysqladmin = '/usr/bin/mysqladmin'
     @mysql      = '/usr/bin/mysql'
-    @user       = $cfg[:mysql_user]
-    @password   = $cfg[:mysql_pwd]
+    @user       = cfg[:mysql_user]
+    @password   = cfg[:mysql_pwd]
   end
 
   # Check if server is running and we have access to the credentials file

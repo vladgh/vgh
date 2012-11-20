@@ -2,7 +2,7 @@ require 'logger'
 
 module VGH
 
-  # Returns log state
+  # Log message
   def log
     if logging?
       $log ||= Logging.new.log
@@ -46,7 +46,11 @@ module VGH
 
     # Opens the log file
     def log_file
-      File.open(@path, File::WRONLY | File::APPEND | File::CREAT)
+      begin
+        File.open(@path, File::WRONLY | File::APPEND | File::CREAT)
+      rescue
+        STDOUT
+      end
     end
 
     # Global, memoized, lazy initialized instance of a logger
@@ -63,4 +67,3 @@ module VGH
 end # module VGH
 
 require 'vgh/cli'
-

@@ -109,5 +109,4 @@ END_FOOTER
 end # module VGH
 
 require 'vgh/cli'
-require 'vgh/configuration'
 require 'vgh/logging'

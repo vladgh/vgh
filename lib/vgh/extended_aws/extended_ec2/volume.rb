@@ -13,9 +13,9 @@ module Extended_EC2
 #
 class Volume
 
-  # Collects all needed variables
-  def initialize
-    @instance_id = MetaData.new.instance_id
+  # @return An instance object
+  def instance
+    @instance ||= ec2.instances[instance_id]
   end
 
   # Creates a Hash collection of volumes containing their id, tag and device
@@ -32,11 +32,11 @@ class Volume
     return @list
   end
 
-  # Returns a Hash containing the block device mappings of the current instance
+  # Returns a Hash containing the block device mappings of the current instance.
   # @return [Hash]
   def mappings
     message.info "Creating a list of volumes..."
-    @mappings ||= ec2.instances[@instance_id].block_device_mappings
+    @mappings ||= instance.block_device_mappings
   end
 
   # Get volume's Name tag

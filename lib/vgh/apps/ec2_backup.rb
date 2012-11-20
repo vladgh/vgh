@@ -14,7 +14,8 @@ module APPS
 
     # Loads the necessary classes
     def initialize
-      $cfg      = parse_config.app_config
+      # Check if this script is run with root credentials
+      abort "ERROR: This app needs to be run as root!" unless is_root?
       @mysql    = System::MySQL.new
       @lv       = System::LV.new
       @volume   = Extended_AWS::Extended_EC2::Volume.new
@@ -40,14 +41,29 @@ module APPS
 
     # Flushes MySQL tables and suspends Logical Volumes
     def lock
-      @mysql.flush
-      @lv.suspend
+      unless remotely?
+        @mysql.flush
+        @lv.suspend
+      end
     end
 
     # Resumes MySQL and Logical Volumes
     def unlock
-      @mysql.unlock
-      @lv.resume
+      unless remotely?
+        @mysql.unlock
+        @lv.resume
+      end
+    end
+
+    # Checks if this script is run remotely.
+    # @return [Boolean]
+    def remotely?
+      cfg = app_config
+      if cfg[:instance] or cfg[:fqdn]
+        @remotely = true
+      else
+        @remotely = false
+      end
     end
 
   end # class EC2_Backup
