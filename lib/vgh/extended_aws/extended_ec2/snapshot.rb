@@ -32,7 +32,7 @@ class Snapshot
   # @param [String] volume_tag The tag of the volume to snapshot
   # @return [Object] The newly created snapshot object
   def create_snapshot(volume_id, volume_tag)
-    @snapshot ||= ec2.volumes[volume_id].
+    @snapshot = ec2.volumes[volume_id].
       create_snapshot("Backup for #{volume_id}(#{volume_tag})")
   end
 

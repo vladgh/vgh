@@ -23,12 +23,16 @@ class MySQL
     @password   = cfg[:mysql_pwd]
   end
 
-  # Check if server is running and we have access to the credentials file
+  # Check if server is running and we have the right credentials
   # @return [Boolean]
   def mysql_exists?
     mysql_exists = false
     if File.exists?(@mysqladmin)
       mysql_exists = system "#{@mysqladmin} -s ping"
+      if ! @user and ! @password
+        message.warning 'WARNING: MySQL exists but no credentials were found!'
+        mysql_exists = false
+      end
     end
     return mysql_exists
   end
