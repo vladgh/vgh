@@ -1,3 +1,6 @@
+=== 0.2.1
+  - Fix SQL and LVM checks
+
 === 0.2.0
   - Add Checkpoint app
   - Merged all configuration files to a single one
