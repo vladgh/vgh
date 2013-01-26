@@ -16,12 +16,22 @@ class MySQL
 
   # Load defaults
   def initialize
-    cfg         = app_config
     @mysqladmin = '/usr/bin/mysqladmin'
     @mysql      = '/usr/bin/mysql'
-    @user       = cfg[:mysql_user]
-    @password   = cfg[:mysql_pwd]
   end
+
+  # Get MySQL user
+  # @return [String]
+  def mysql_user
+    @mysql_user ||= config[:mysql_user]
+  end
+
+  # Get MySQL password
+  # @return [String]
+  def mysql_password
+    @mysql_password ||= config[:mysql_password]
+  end
+
 
   # Check if server is running and we have the right credentials
   # @return [Boolean]
@@ -29,7 +39,7 @@ class MySQL
     mysql_exists = false
     if File.exists?(@mysqladmin)
       mysql_exists = system "#{@mysqladmin} -s ping"
-      if ! @user and ! @password
+      if ! mysql_user and ! mysql_password
         message.warning 'WARNING: MySQL exists but no credentials were found!'
         mysql_exists = false
       end
@@ -41,7 +51,7 @@ class MySQL
   def flush
     if mysql_exists?
       message.info 'Locking MySQL tables...'
-      `#{@mysql} -u#{@user} -p#{@password} -e "FLUSH TABLES WITH READ LOCK"`
+      `#{@mysql} -u#{mysql_user} -p#{mysql_password} -e "FLUSH TABLES WITH READ LOCK"`
     end
   end
 
@@ -49,7 +59,7 @@ class MySQL
   def unlock
     if mysql_exists?
       message.info 'Unlocking MySQL tables...'
-      `#{@mysql} -u#{@user} -p#{@password} -e "UNLOCK TABLES"`
+      `#{@mysql} -u#{mysql_user} -p#{mysql_password} -e "UNLOCK TABLES"`
     end
   end
 

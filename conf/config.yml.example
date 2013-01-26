@@ -1,9 +1,30 @@
-# Main settings for VGH gem
+# Configuration for the VGH gem
 
-# AWS Credentials:
-:access_key_id: 'xxxxxxxxxxxxxxxxxx'
-:secret_access_key: 'xxxxxxxxxxxxxxxxxx'
+#####################
+# AWS Configuration #
+#####################
+# (See http://docs.aws.amazon.com/AWSRubySDK/latest/AWS.html#config-class_method
+# for a full list of configuration options):
+# (NOTE: It's recommended to use IAM roles and not put your credentials here:
+# http://docs.aws.amazon.com/AWSSdkDocsRuby/latest/DeveloperGuide/ruby-dg-roles.html)
+#
+#:access_key_id: '1234'
+#:secret_access_key: '4321'
+#:ec2_endpoint: 'ec2.us-west-2.amazonaws.com'
+#:auto_scaling_endpoint: 'autoscaling.us-west-2.amazonaws.com'
 
-# AWS Region (optional). It defaults to 'us-east-1'
-#:region: 'us-west-1'
 
+###########################
+# EC2-Backup app settings #
+###########################
+
+# Expiration period (defaults to 7 days)
+#:expiration: 7 # Number of days to keep the snapshots
+
+# MySQL Settings
+#:mysql_user: 'dbadmin' # The MySQL user that can flush the tables
+#:mysql_password: 'MyStrongPassword' # The password of the above MySQL user
+
+# Remote settings
+#:instance: 'i-12345678' # The id of the remote instance you want to backup
+#:fqdn: 'server.example.com' # The fully qualified domain name of the server

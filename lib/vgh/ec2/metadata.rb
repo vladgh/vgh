@@ -6,16 +6,16 @@ module VGH
   # queries the API server for it.
   # @return [String]
   def instance_id
-      remote_instance = app_config[:instance]
+      remote_instance = config[:instance]
       if remote_instance
         $instance_id ||= remote_instance
       else
-        $instance_id ||= VGH::Extended_AWS::Extended_EC2::MetaData.new.instance_id
+        $instance_id ||= VGH::EC2::MetaData.new.instance_id
       end
+      return $instance_id
   end
 
-module Extended_AWS
-module Extended_EC2
+module EC2
 
 # This class gathers metadata information about the current instance, used by
 # the applications in this gem.
@@ -50,8 +50,7 @@ class MetaData
 
 end
 
-end # module Extended_EC2
-end # module Extended_AWS
+end # module EC2
 end # module VGH
 
 require 'vgh/output'

@@ -14,12 +14,6 @@ module VGH
     $app ||= cli[:app]
   end
 
-  # Returns the configuration specified in the command line
-  # @return [String]
-  def cli_confdir
-    $cli_confdir ||= cli[:confdir]
-  end
-
   # Returns verbosity
   # @return [Boolean]
   def verbose?
@@ -56,6 +50,7 @@ module VGH
       @options[:app]     = false
       @options[:verbose] = false
       @options[:logging] = false
+      @options[:confdir] = nil
     end
 
     # Collect options
@@ -115,9 +110,14 @@ module VGH
 
     # Loads the configuration directory
     def confdir
-      @optparse.on('-c', '--confdir \'~/.vgh\'', 'Configuration directory') do |conf|
-        path = File.expand_path(conf)
-        @options[:confdir] = path if File.directory?(path)
+      @optparse.on('--confdir=PATH', 'Configuration directory') do |config_dir|
+        path = File.expand_path(config_dir)
+        if File.directory?(path)
+          @options[:confdir] = path
+        else
+          puts "The configuration directory '#{config_dir}' does not exist!"
+          exit
+        end
       end
     end
 

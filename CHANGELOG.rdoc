@@ -1,3 +1,9 @@
+=== 0.2.0
+  - Add Checkpoint app
+  - Merged all configuration files to a single one
+  - Major code refactoring
+  - Improved tests
+
 === 0.1.2
 [Bugs]
   - Fix snapshot creation process (remove memoization)

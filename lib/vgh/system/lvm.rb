@@ -12,70 +12,84 @@ module System
 #
 # == Usage:
 #
-#     lvm = System::LV.new
-#     lvm.suspend_lvs
+#     lvm = System::LVM.new
+#     lvm.suspend
 #     # run the code that takes the snapshot
-#     lvm.resume_lvs
+#     lvm.resume
 #
-class LV
+class LVM
 
   # Loads variables and checks if LVM Tools are installed
   def initialize
-    @dmcmd = '/sbin/dmsetup'
     installed?
+  end
+
+  # @return [String] The dmsetup system command
+  def dm_cmd
+    @dmcmd ||= '/sbin/dmsetup'
   end
 
   # Warn message if LVM tools are not installed
   def installed?
-    message.warn "LVM Tools are not installed" unless File.exists?(@dmcmd)
+    if File.exists?(dm_cmd)
+      return true
+    else
+      message.warn "LVM Tools are not installed"
+      return false
+    end
+  end
+
+  # @return [String] A list of logical volumes present
+  def lvs
+    if ( installed? and System.is_root? )
+      @lvs ||= `#{dm_cmd} ls | /bin/grep -E -v 'swap|root'`
+    else
+      message.warn "Listing logical volume needs root privileges!"
+      return nil
+    end
   end
 
   # Test if logical volumes are present
   # @return [Boolean]
   def lvs_are_present?
-    lvs_are_present = false
-    @lvlist = `#{@dmcmd} ls | /bin/grep -E -v 'swap|root'`
-    if @lvlist != "No devices found\n" then
-      lvs_are_present = true
+    if lvs != "No devices found\n" then
+      return true
+    else
+      message.info "No logical volumes found."
+      return false
     end
-    return lvs_are_present
   end
 
   # Suspend all logical volume
   def suspend
-    if lvs_are_present?
-      suspend_lvs
-    else
-      message.info "No logical volumes found."
-    end
+    suspend_lvs if lvs_are_present?
   end
 
   # The actual suspend action
   def suspend_lvs
-    for lv_name in @lvlist.split[0]
+    for lv_name in lvs.split[0]
       message.info "Suspending Logical Volume '#{lv_name}'..."
-      `#{@dmcmd} suspend #{lv_name}`
+      `#{dm_cmd} suspend #{lv_name}`
     end
   end
 
   # Resume all logical volumes
   def resume
-    if lvs_are_present?
-      resume_lvs
-    end
+    resume_lvs if lvs_are_present?
   end
 
   # The actual resume action
   def resume_lvs
-     for lv_name in @lvlist.split[0]
+    for lv_name in lvs.split[0]
       message.info "Resuming Logical Volume '#{lv_name}'..."
-      `#{@dmcmd} resume #{lv_name}`
+      `#{dm_cmd} resume #{lv_name}`
     end
   end
 
-end # class LV
+end # class LVM
 end # module System
 end # module VGH
 
 require 'vgh/output'
+require 'vgh/system'
 

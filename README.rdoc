@@ -8,12 +8,12 @@ A collection of custom scripts used on VladGh.com
 == Instalation
 
 Some system wide dependencies should be installed first:
-  * ruby 1.8 or 1.9
-  * rubygems (if ruby 1.8)
-  * ruby-dev
-  * build-essential
-  * libxslt & libxslt-dev
-  * libxml2 & libxml2-dev
+* ruby 1.8 or 1.9
+* rubygems (if ruby 1.8)
+* ruby-dev
+* build-essential
+* libxslt & libxslt-dev
+* libxml2 & libxml2-dev
 
 
 Add this line to your application's Gemfile:
@@ -31,26 +31,14 @@ Or install it yourself as:
 
 == Configuration
 
-This gem looks for the following configuration files inside "+/etc/vgh+" or the
-+--confdir+ specified in {VGH::CLI CLI Class}:
+This gem looks for the configuration file inside the following folders
+* +/etc/vgh+
+* +~/.vgh+
+* +--confdir+ (specified in the command line options)
 
-[+config.yml+]
-  The main configuration file for this gem.
-  This file should include the AWS specific configuration.
-  Available values:
-  - +:access_key_id+ - [String] Your AWS credentials
-  - +:secret_access_key+ - [String] Your AWS credentials
-  - +:region+ - optional [String] Your current instance's region.
-    Ex: +'us-west-1'+
+This gem checks if the file exists and if it is in a correct YAML format.
 
-[+#APP_NAME.config.yml+]
-  The application specific configuration (see
-  {file:README.rdoc#Applications Applications} below for a list of available
-  apps and values).
-
-This gem checks if the files exists and if they are in a correct YAML format.
-
-All files should have the following format (where the keys are symbols):
+It should have the following format (where the keys are symbols):
     # Comment
     :key: 'value'
     :string: 'string value'
@@ -63,10 +51,13 @@ All files should have the following format (where the keys are symbols):
      -
      :sub_key: 'sub value'
 
-Example configuration files can be found in this gem's directory. You can
-find were that is by specifying the +--gemdir+ command line option.
+An example of the configuration file can be found in this gem's directory.
+You can find were that is by specifying the +--gemdir+ command line option.
 
 Ex: <tt>vgh --gemdir</tt>
+
+Read the config.yml.example for a list of configuration options.
+
 
 == Command line options
 
@@ -75,8 +66,8 @@ The following command line options are available:
 [+ApplicationName+] Specify the application you want to run. For a
                     list of available apps see
                     {file:README.rdoc#Applications Applications} below.
-[+-c+ <tt>--confdir '~/.vgh'</tt>] Specify the desired directory in which
-                                   the configuration files reside.
+[<tt>--confdir=~/.vgh</tt>] Specify the desired directory in which
+                            the configuration files reside.
 [+-v+ <tt>--[no-]verbose</tt>] Specify whether to display messages on the
                                screen or not.
 [+-l+ <tt>--[no-]logging</tt>] Specify whether to log messages or not.
@@ -116,28 +107,27 @@ The following command line options are available:
   be postponed for as long as the device is suspended.
 
 
-  ==== EC2-Backup Configuration
-  +ec2-backup.config.yml+
-  - +:expiration+ -- required [Integer] Number of days to keep the snapshots.
-      # Ex:
-      :expiration: 7
-  - +:mysql_user+ -- required [String] The MySQL user that can flush the tables.
-      # Ex:
-      :mysql_user: 'dbadmin'
-  - +:mysql_pwd+ -- required [String] The password of the above MySQL user.
-      # Ex:
-      :mysql_pwd: 'MyStrongPassword'
-  - +:instance+ -- optional [String] The id of the remote instance you want to backup.
-      # Ex:
-      :instance: 'i-12345678'
-  - +:fqdn+ -- optional [String] The FQDN of the remote instance you want to backup.
-      # Ex:
-      :fqdn: 'MyServer.Example.com'
+  ==== Intended usage
+    # Cron Job:
+    0 */6 * * * vgh ec2-backup -l
+
+=== Checkpoint
+
+[/bin/vgh checkpoint]
+
+  ==== Description
+  This app looks for volumes tagged with the 'CHECKPOINT' key attached to the
+  current instance, and creates snapshots for them.
+  It is intended to be used as a cron job on an AWS instance running
+  Ubuntu.
+
+  MySQL flushing and LVM suspending specified above in the EC2-Backup app, work
+  the same.
 
 
   ==== Intended usage
     # Cron Job:
-    0 */6 * * * vgh ec2-backup -l
+    0 */6 * * * vgh checkpoint -l
 
 
 == Contributing

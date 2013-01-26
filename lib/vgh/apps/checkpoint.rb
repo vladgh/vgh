@@ -3,14 +3,14 @@ module APPS
 
   # == Description:
   #
-  # See {file:README.rdoc#EC2-Backup EC2-Backup Section} in the README
+  # See {file:README.rdoc#Checkpoint Checkpoint Section} in the README
   # file.
   #
   # == Usage:
-  #     backup = APPS::EC2_Backup.new
-  #     backup.run
+  #     checkpoint = APPS::Checkpoint.new
+  #     checkpoint.run
   #
-  class EC2_Backup
+  class Checkpoint
 
     # @return [Object] Volumes Class
     attr_reader :volumes
@@ -20,19 +20,19 @@ module APPS
       @volumes ||= EC2::Volume.new
     end
 
-    # Runs the ec2-backup app logic
+    # Runs the checkpoint app logic
     def run
 
       System.lock
 
       vols = volumes
-      vols.list.map {|vid|
+      vols.list_tagged('CHECKPOINT').map {|vid|
         snap_and_tag(
           vid,
-          "Backup for #{vid}(#{vols.name_tag(vid)})",
+          "CHECKPOINT for #{vid}(#{vols.name_tag(vid)})",
           {
             'Name'   => fqdn,
-            'BACKUP' => "#{instance_id};#{vid}"
+            'CHECKPOINT' => "#{instance_id};#{vid}"
           }
         )
       }

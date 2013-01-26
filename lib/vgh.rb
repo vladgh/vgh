@@ -28,6 +28,8 @@ module VGH
     case app
     when 'ec2-backup'
       APPS::EC2_Backup.new.run
+    when 'checkpoint'
+      APPS::Checkpoint.new.run
     end
 
     # Display footer
@@ -48,6 +50,6 @@ module VGH
 end # module VGH
 
 require "vgh/output"
-require "vgh/system"
 require "vgh/apps"
 require "vgh/apps/ec2_backup"
+require "vgh/apps/checkpoint"

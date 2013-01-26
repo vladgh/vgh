@@ -13,7 +13,8 @@ module APPS
   # @return [Array]
   def self.list
     @apps ||= [
-      'ec2-backup'
+      'ec2-backup',
+      'checkpoint'
     ]
   end
 

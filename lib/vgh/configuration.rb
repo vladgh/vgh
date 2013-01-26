@@ -5,40 +5,12 @@ require 'logger'
 
 module VGH
 
-  # Initialize the configuration parser
-  # @return [Hash]
-  def parse_config
-    $parse_config ||= Configuration.new
-  end
-
-  # Returns a hash containing the main settings
+  # Global config method
   # @return [Hash]
   def config
-    $config ||= parse_config.main_config
+    $config ||= Configuration.new.config
   end
 
-  # Returns a hash containing the app settings
-  # @return [Hash]
-  def app_config
-    $app_config ||= parse_config.app_config
-  end
-
-  # Returns a single merged hash with all configurations
-  # @return [Hash]
-  def global_config
-    $global_config ||= [config, app_config].inject(:merge)
-  end
-
-  # Creates a global ec2 method (passing the specified region).
-  # The default region is us-east-1, so we overwrite it here.
-  def ec2
-    region = config[:region]
-    if region
-      $ec2 = AWS::EC2.new.regions[region]
-    else
-      $ec2 = AWS::EC2.new
-    end
-  end
 
   # == Description:
   #
@@ -48,81 +20,98 @@ module VGH
   #
   # == Usage:
   #
-  #     parse       = Configuration.new
-  #     main_config = parse.main_config
-  #     app_config  = parse.app_config
+  #     config    = Configuration.new.config
+  #     mysetting = config[:mysetting]
   #
-  #     pp main_config
-  #     pp app_config
   #
   class Configuration
 
-    # Main configuration
-    attr_reader :main_config
+    # Global configuration
+    # @return [Hash] The configuration hash
+    attr_reader :config
 
-    # App specific configuration
-    attr_reader :app_config
-
-    # Set defaults
+    # Parse the main configuration
+    # @return [Hash]
     def initialize
-      @confdir = validate_config_dir('/etc/vgh')
-      @main    = "#{@confdir}/config.yml"
-      @app     = "#{@confdir}/#{app}.config.yml"
+      message.info "Loading configuration..."
+      @config ||= validate(config_file)
+      aws_config
+    end
+
+    # The global configuration directory
+    # @return [String]
+    def global_config_dir
+      '/etc/vgh'
+    end
+
+    # The user configuration directory
+    # @return [String]
+    def user_config_dir
+      File.expand_path('~/.vgh')
     end
 
     # IF specified, use the confdir specified in the command line options
-    def validate_config_dir(default_confdir)
-      cli = cli_confdir
-      if cli.nil?
-        return default_confdir
+    # @return [String]
+    def confdir
+      cli_confdir = cli[:confdir]
+      global = global_config_dir
+      if !cli_confdir.nil?
+        return cli_confdir
+      elsif File.directory?(global)
+        return global
       else
-        return cli
+        return user_config_dir
       end
     end
 
+    # The main configuration file
+    # @return [String]
+    def config_file
+      "#{confdir}/config.yml"
+    end
+
     # Returns error if the configuration is not right
-    def validate(cfg)
-      unless config_exists?(cfg) and config_correct?(cfg)
-        puts load_error(cfg)
+    # @return [Hash]
+    def validate(path)
+      if config_exists?(path) and config_correct?(path)
+        parse(path)
+      else
+        puts load_error(path)
         exit 1
       end
     end
 
     # Checks if the configuration file exists
+    # @return [Boolean]
     def config_exists?(path)
       File.exist?(path)
     end
 
     # Checks if the configuration is a valid YAML file
+    # @return [Boolean]
     def config_correct?(path)
       parse(path).kind_of?(Hash)
     end
 
     # Returns a parsed configuration
+    # @return [Hash]
     def parse(path)
-      @parse = YAML.load(File.read(path))
+      YAML.load(File.read(path))
     end
 
-    # Parse the main configuration
-    def main_config
-      message.info "Loading main configuration..."
-      validate(@main)
-      @main_config = parse(@main)
-      AWS.config({
-        :access_key_id     => @main_config[:access_key_id],
-        :secret_access_key => @main_config[:secret_access_key],
-        :logger            => log,
-        :log_formatter     => AWS::Core::LogFormatter.colored,
-        :max_retries       => 2
-      })
-      return @main_config
+    # Configures AWS
+    def aws_config
+      AWS.config(config)
+      AWS.config(aws_logging)
     end
 
-    # Parse app specific configuration
-    def app_config
-      message.info "Loading #{app} configuration..."
-      validate(@app)
-      @app_config = parse(@app)
+    # Implements our own Logging class
+    # @return [Hash]
+    def aws_logging
+      aws_logging ||= {
+        :logger        => log,
+        :log_formatter => AWS::Core::LogFormatter.colored
+      }
     end
 
     # Returns the error message in case the configuration os not right
