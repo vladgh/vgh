@@ -16,8 +16,8 @@ class MySQL
 
   # Load defaults
   def initialize
-    @mysqladmin = '/usr/bin/mysqladmin'
-    @mysql      = '/usr/bin/mysql'
+    @mysqladmin_cmd = '/usr/bin/mysqladmin'
+    @mysql_cmd      = '/usr/bin/mysql'
   end
 
   # Get MySQL user
@@ -32,17 +32,27 @@ class MySQL
     @mysql_password ||= config[:mysql_password]
   end
 
+  # Check if server is running and we have the right credentials
+  # @return [Boolean]
+  def commands_present?
+    commands_present = false
+    if File.exists?(@mysqladmin_cmd) and File.exists?(@mysqladmin_cmd)
+      commands_present = true
+    end
+    return commands_present
+  end
 
   # Check if server is running and we have the right credentials
   # @return [Boolean]
   def mysql_exists?
     mysql_exists = false
-    if File.exists?(@mysqladmin)
-      mysql_exists = system "#{@mysqladmin} -s ping"
-      if ! mysql_user and ! mysql_password
-        message.warning 'WARNING: MySQL exists but no credentials were found!'
-        mysql_exists = false
-      end
+    server_present = system "#{@mysqladmin_cmd} -s ping" if commands_present?
+    if server_present and mysql_user.nil? and mysql_password.nil?
+      message.warn 'WARNING: MySQL exists but no credentials were found!'
+    elsif ! server_present and ! mysql_user.nil? and ! mysql_password.nil?
+      message.warn 'WARNING: MySQL credentials exist but no local server was found!'
+    elsif server_present and ! mysql_user.nil? and ! mysql_password.nil?
+      mysql_exists = true
     end
     return mysql_exists
   end
@@ -69,3 +79,4 @@ end # module VGH
 
 require 'vgh/output'
 require 'vgh/configuration'
+

@@ -19,11 +19,6 @@ module System
 #
 class LVM
 
-  # Loads variables and checks if LVM Tools are installed
-  def initialize
-    installed?
-  end
-
   # @return [String] The dmsetup system command
   def dm_cmd
     @dmcmd ||= '/sbin/dmsetup'
@@ -41,46 +36,27 @@ class LVM
 
   # @return [String] A list of logical volumes present
   def lvs
+    @lvs = []
     if ( installed? and System.is_root? )
-      @lvs ||= `#{dm_cmd} ls | /bin/grep -E -v 'swap|root'`
+      lv_list = `#{dm_cmd} ls | /bin/grep -E -v 'swap|root'`
+      @lvs.push(lv_list.split[0]) unless lv_list == "No devices found\n"
     else
       message.warn "Listing logical volume needs root privileges!"
-      return nil
     end
-  end
-
-  # Test if logical volumes are present
-  # @return [Boolean]
-  def lvs_are_present?
-    if lvs != "No devices found\n" then
-      return true
-    else
-      message.info "No logical volumes found."
-      return false
-    end
-  end
-
-  # Suspend all logical volume
-  def suspend
-    suspend_lvs if lvs_are_present?
+    return @lvs
   end
 
   # The actual suspend action
-  def suspend_lvs
-    for lv_name in lvs.split[0]
+  def suspend
+    for lv_name in lvs
       message.info "Suspending Logical Volume '#{lv_name}'..."
       `#{dm_cmd} suspend #{lv_name}`
     end
   end
 
-  # Resume all logical volumes
-  def resume
-    resume_lvs if lvs_are_present?
-  end
-
   # The actual resume action
-  def resume_lvs
-    for lv_name in lvs.split[0]
+  def resume
+    for lv_name in lvs
       message.info "Resuming Logical Volume '#{lv_name}'..."
       `#{dm_cmd} resume #{lv_name}`
     end

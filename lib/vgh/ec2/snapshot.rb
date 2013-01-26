@@ -54,7 +54,7 @@ class Snapshot
   # Tags a Snapshot
   def tag_snapshot
     snap = snapshot
-    message.info "Tagging snapshot \"#{snap.id}\""
+    message.info "Tagging snapshot \"#{snap.id}\"..."
     tags.map {|key, value|
       ec2.tags.create(snap, key, {:value => value})
     }
