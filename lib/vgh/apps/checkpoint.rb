@@ -15,9 +15,13 @@ module APPS
     # @return [Object] Volumes Class
     attr_reader :volumes
 
+    # @return [Object] Snapshot Class
+    attr_reader :snapshot
+
     # Initialize external classes
     def initialize
       @volumes ||= EC2::Volume.new
+      @snapshot = EC2::Snapshot.new
     end
 
     # Runs the checkpoint app logic
@@ -25,16 +29,16 @@ module APPS
 
       System.lock
 
-      vols = volumes
-      vols.list_tagged('CHECKPOINT').map {|vid|
-        snap_and_tag(
+      volumes.list_tagged('CHECKPOINT').map {|vid|
+        snapshot.snap_and_tag(
           vid,
-          "CHECKPOINT for #{vid}(#{vols.name_tag(vid)})",
+          "CHECKPOINT for #{vid}(#{volumes.name_tag(vid)})",
           {
             'Name'   => fqdn,
-            'CHECKPOINT' => "#{instance_id};#{vid}"
+            'CHECKPOINT' => "#{vid}"
           }
         )
+        snapshot.purge_checkpoints_for vid
       }
 
       System.unlock

@@ -14,12 +14,13 @@
 #:auto_scaling_endpoint: 'autoscaling.us-west-2.amazonaws.com'
 
 
-###########################
-# EC2-Backup app settings #
-###########################
+########################################
+# EC2-Backup & Checkpoint app settings #
+########################################
 
 # Expiration period (defaults to 7 days)
-#:expiration: 7 # Number of days to keep the snapshots
+#:expiration: 7 # Number of days to keep the backup snapshots
+#:checkpoints: 5 # How many checkpoints should be kept
 
 # MySQL Settings
 #:mysql_user: 'dbadmin' # The MySQL user that can flush the tables

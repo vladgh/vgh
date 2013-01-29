@@ -52,9 +52,10 @@ It should have the following format (where the keys are symbols):
      :sub_key: 'sub value'
 
 An example of the configuration file can be found in this gem's directory.
-You can find were that is by specifying the +--gemdir+ command line option.
+You can copy it by using the +--example=PATH+ command line option.
 
-Ex: <tt>vgh --gemdir</tt>
+Ex: <tt>mkdir /etc/vgh
+vgh --example=/etc/vgh</tt>
 
 Read the config.yml.example for a list of configuration options.
 

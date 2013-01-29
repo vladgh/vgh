@@ -36,7 +36,7 @@ class MySQL
   # @return [Boolean]
   def commands_present?
     commands_present = false
-    if File.exists?(@mysqladmin_cmd) and File.exists?(@mysqladmin_cmd)
+    if File.exists?(@mysqladmin_cmd) and File.exists?(@mysql_cmd)
       commands_present = true
     end
     return commands_present

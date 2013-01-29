@@ -1,7 +1,13 @@
 === 0.2.1
+[Features]
+  - Add '--example' option to generate example configuration
+  - Add option to keep a number of checkpoints
+[Bugs]
   - Fix SQL and LVM checks
+  - Clean up the Snapshot class
 
 === 0.2.0
+[Features]
   - Add Checkpoint app
   - Merged all configuration files to a single one
   - Major code refactoring

@@ -15,9 +15,13 @@ module APPS
     # @return [Object] Volumes Class
     attr_reader :volumes
 
+    # @return [Object] Snapshot Class
+    attr_reader :snapshot
+
     # Initialize external classes
     def initialize
       @volumes ||= EC2::Volume.new
+      @snapshot = EC2::Snapshot.new
     end
 
     # Runs the ec2-backup app logic
@@ -25,16 +29,16 @@ module APPS
 
       System.lock
 
-      vols = volumes
-      vols.list.map {|vid|
-        snap_and_tag(
+      volumes.list.map {|vid|
+        snapshot.snap_and_tag(
           vid,
-          "Backup for #{vid}(#{vols.name_tag(vid)})",
+          "Backup for #{vid}(#{volumes.name_tag(vid)})",
           {
             'Name'   => fqdn,
-            'BACKUP' => "#{instance_id};#{vid}"
+            'BACKUP' => "#{vid}"
           }
         )
+        snapshot.purge_backups_for vid
       }
 
       System.unlock

@@ -65,7 +65,7 @@ module VGH
       confdir
       verbose
       logging
-      gemdir
+      examples
       help
       version
       validate(args)
@@ -135,10 +135,12 @@ module VGH
       end
     end
 
-    # Displays the location of gem files
-    def gemdir
-      @optparse.on_tail('-g', '--gemdir', 'Gem files location') do
-        puts File.expand_path('../../', File.dirname(__FILE__))
+    # Creates sample config folder
+    def examples
+      @optparse.on_tail('-e', '--example=PATH', 'Generate example configuration') do |path|
+        examples = Dir.glob(File.expand_path('../../conf/*', File.dirname(__FILE__)))
+        destination = File.expand_path(path)
+        FileUtils.cp examples, destination, :verbose => true
         exit
       end
     end
