@@ -36,7 +36,7 @@ module VGH
     # Returns the current system's FQDN
     # @return [String]
     def self.fqdn
-      $fqdn ||= `hostname -f`
+      $fqdn ||= `hostname -f`.strip
     end
 
     # Returns the current system's FQDN
