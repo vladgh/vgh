@@ -38,7 +38,7 @@ module APPS
             'CHECKPOINT' => "#{vid}"
           }
         )
-        snapshot.purge_checkpoints_for vid
+        snapshot.purge_checkpoints
       }
 
       System.unlock

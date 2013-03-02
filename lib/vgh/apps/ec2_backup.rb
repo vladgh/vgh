@@ -38,7 +38,7 @@ module APPS
             'BACKUP' => "#{vid}"
           }
         )
-        snapshot.purge_backups_for vid
+        snapshot.purge_backups
       }
 
       System.unlock

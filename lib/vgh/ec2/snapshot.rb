@@ -55,16 +55,16 @@ class Snapshot
   end
 
   # Purges expired snapshots
-  def purge_backups_for(*args)
-    expired_backups_for(*args).each do |snap|
+  def purge_backups
+    expired_backups.each do |snap|
       message.info "Deleting expired snapshot (#{snap.id})"
       snap.delete
     end
   end
 
   # Purges expired snapshots
-  def purge_checkpoints_for(*args)
-    expired_checkpoints_for(*args).each do |snap|
+  def purge_checkpoints
+    expired_checkpoints.each do |snap|
       message.info "Deleting checkpoint (#{snap.id})"
       snap.delete
     end
@@ -73,9 +73,10 @@ class Snapshot
   # Creates a list of expired snapshots according to the expiration time
   # specified in the app's configuration file
   # @return [Array] An array of expired snapshot objects
-  def expired_backups_for(vid)
+  def expired_backups
     @expired_backups = []
-    all_backups.tagged('BACKUP').tagged_values(vid).
+    all_backups.tagged('BACKUP').
+      tagged('Name').tagged_values(fqdn).
       each {|snap|
         if snap.start_time < (Time.now - backup_expiration*24*60*60)
           @expired_backups.push snap
@@ -86,9 +87,10 @@ class Snapshot
 
   # Creates a list of checkpoints that should be purged
   # @return [Array] An array of snapshot objects
-  def expired_checkpoints_for(vid)
+  def expired_checkpoints
     @expired_checkpoints = all_backups.
-      tagged('CHECKPOINT').tagged_values(vid).
+      tagged('CHECKPOINT').
+      tagged('Name').tagged_values(fqdn).
       sort_by(&:start_time).reverse.
       drop(checkpoints_to_keep)
   end
