@@ -27,12 +27,12 @@ describe VGH::EC2::Snapshot do
   end
 
   it "Should create a list of expired backups" do
-    snap.expired_backups_for(@volume1.id).should be_an Array
+    snap.expired_backups.should be_an Array
   end
 
   it "Should create a list of expired checkpoints" do
     snap.stub(:config).and_return({:checkpoints => 2})
-    snap.expired_checkpoints_for(@volume1.id).should be_an Array
+    snap.expired_checkpoints.should be_an Array
   end
 
 
