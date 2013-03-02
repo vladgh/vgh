@@ -1,6 +1,6 @@
 module VGH
   # Version number
-  VERSION = "0.2.3"
+  VERSION = "0.2.4"
 
   # Returns the version number
   def version
