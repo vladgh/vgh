@@ -1,3 +1,7 @@
+=== 0.2.3
+[Bugs]
+  - Fix fqdn string
+
 === 0.2.2
 [Features]
   - Add '--example' option to generate example configuration
