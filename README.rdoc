@@ -1,4 +1,4 @@
-= VGH Scripts
+= VGH Scripts (Abandoned)
 {<img src="https://secure.travis-ci.org/vladgh/vgh.png" alt="Build Status" />}[http://travis-ci.org/vladgh/vgh]
 {<img src="https://codeclimate.com/badge.png" />}[https://codeclimate.com/github/vladgh/vgh]
 
