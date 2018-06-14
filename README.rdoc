@@ -1,9 +1,12 @@
-= VGH Scripts (Abandoned)
+= VGH Scripts
 {<img src="https://secure.travis-ci.org/vladgh/vgh.png" alt="Build Status" />}[http://travis-ci.org/vladgh/vgh]
 {<img src="https://codeclimate.com/badge.png" />}[https://codeclimate.com/github/vladgh/vgh]
 
 A collection of custom scripts used on VladGh.com
 
+_**This project is no longer maintained**.
+Thank you all for using and contributing to this project.
+It will be left here for a while, so please feel free so fork this repository and to improve it as you see fit._
 
 == Instalation
 
